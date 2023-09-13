@@ -21,8 +21,7 @@ function Dashboard() {
         </Button>
       </div>
       <div className="dashboard__card">
-        <List/>
-        
+        <List />
       </div>
     </DashboardElement>
   );
