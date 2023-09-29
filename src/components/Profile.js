@@ -1,16 +1,36 @@
-import React from 'react'
-import { ProfileCard } from '../styled/Profile'
+import React, { useState } from "react";
+import { ProfileCard } from "../styled/Profile";
 import UserImg from "../images/undraw_male_avatar_g98d.svg";
+import { Button } from "../styled/Button";
+import { useNavigate } from "react-router-dom";
 
-function Profile() {
-  return (
-    <ProfileCard>
-        <img src={UserImg} alt='' />
-        <h4>Username: Odeagard Allison</h4>
-        <h5>Email: Odedsr33@gmail.com</h5>
-        <p>Joined: 23-03-2023</p>
-        <p>Password: *************</p>
-    </ProfileCard>  )
+function getUser() {
+  let user = localStorage.getItem("user");
+  if (user) {
+    user = JSON.parse(user);
+  } else {
+    user = null;
+  }
+  return user;
 }
 
-export default Profile
+function Profile() {
+  const [user, setUser] = useState(getUser());
+  const navigate = useNavigate();
+  
+  return (
+    <>
+      {user ? (
+        <ProfileCard>
+          <img src={user.image} alt="" />
+          <h4>Username: {user.username}</h4>
+          <h5>Email: {user.email}</h5>
+        </ProfileCard>
+      ) : (
+        <Button onClick={navigate("/")}>Login</Button>
+      )}
+    </>
+  );
+}
+
+export default Profile;

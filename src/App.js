@@ -9,6 +9,7 @@ import CreateTask from "./components/CreateTask";
 import Profile from "./components/Profile";
 import UpdateProfile from "./components/UpdateProfile";
 
+
 function App() {
   return (
     <div className="app">
@@ -22,7 +23,7 @@ function App() {
           <Route path="/signup" element={<SignUp />} />
           <Route path="/" element={<SignIn />} />
         </Routes>
-        <Footer />
+        {/* <Footer /> */}
       </Router>
     </div>
   );

@@ -12,13 +12,19 @@ export const DashboardElement = styled.div`
     flex-direction: row;
     justify-content: space-between;
     align-items: center;
-    width: 360px;
+    width: 1100px;
 
     button{
         display: flex;
         flex-direction: row;
         align-items: center;
         justify-content: center;
+    }
+
+    form {
+      display: flex !important;
+      flex-direction: row !important;
+      width: auto !important;
     }
   }
 `;

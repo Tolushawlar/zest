@@ -5,8 +5,12 @@ import BookmarkBorderIcon from "@mui/icons-material/BookmarkBorder";
 import FilterListIcon from "@mui/icons-material/FilterList";
 import LibraryAddIcon from "@mui/icons-material/LibraryAdd";
 import List from "./List";
+import { useNavigate } from "react-router-dom";
+import { FormElement } from "../styled/Form";
+import NewTask from "./NewTask";
 
 function Dashboard() {
+  const navigate = useNavigate();
   return (
     <DashboardElement>
       <div className="dashboard__buttons">
@@ -16,9 +20,7 @@ function Dashboard() {
         <Button>
           Filter Task <FilterListIcon />
         </Button>
-        <Button>
-          Create Task <LibraryAddIcon />
-        </Button>
+        <NewTask />
       </div>
       <div className="dashboard__card">
         <List />
