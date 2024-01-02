@@ -18,7 +18,7 @@ function Header() {
   const [user, setUser] = useState(getUser());
   const navigate = useNavigate();
   const handleLogout = () => {
-    localStorage.removeItem("user");
+    //localStorage.removeItem("user");
     setUser(null);
     navigate("/")
   };

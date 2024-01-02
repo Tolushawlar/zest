@@ -6,24 +6,26 @@ import { Button } from "../styled/Button";
 import { useDispatch, useSelector } from "react-redux";
 import { loginUser } from "../Store/UserSlice";
 import { useNavigate } from "react-router-dom";
+import { getCookie } from "../config";
 
 function SignIn() {
-  const [username, setUsername] = useState("");
+  const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const navigate = useNavigate();
 
+  const csrftoken = getCookie("csrftoken");
+  console.log(csrftoken);
   const { loading, error } = useSelector((state) => state.user);
   const dispatch = useDispatch();
   const handleLoginEvent = (e) => {
     e.preventDefault();
     let userCredentials = {
-      username,
+      email,
       password,
     };
-    console.log(userCredentials);
     dispatch(loginUser(userCredentials)).then((result) => {
       if (result.payload) {
-        setUsername("");
+        setEmail("");
         setPassword("");
         navigate("/dashboard");
       }
@@ -37,14 +39,15 @@ function SignIn() {
         </div>
         <div className="authpage_right">
           <FormElement>
+            <input type="hidden" name="csrfmiddlewaretoken" value={csrftoken} />
             <h2>Login</h2>
             {error ? <p>{error}</p> : ""}
 
             <input
               placeholder="Enter your username"
               type="text"
-              value={username}
-              onChange={(e) => setUsername(e.target.value)}
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
             />
             <input
               placeholder="Enter your password"

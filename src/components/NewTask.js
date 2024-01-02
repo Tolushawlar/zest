@@ -3,54 +3,88 @@ import React, { useState } from "react";
 import { Button } from "../styled/Button";
 import { FormElement } from "../styled/Form";
 import LibraryAddIcon from "@mui/icons-material/LibraryAdd";
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
+import axios from "axios";
 
-function NewTask() {
+export default function NewTask() {
   const [taskTitle, setTaskTitle] = useState("");
   const [taskStatus, setTaskStatus] = useState("");
+  const [selectedDate, setSelectedDate] = useState(null);
+  const user = JSON.parse(localStorage.getItem("user")).user.email;
+  const token = JSON.parse(localStorage.getItem("user")).token;
+  const csrfToken = "{% csrf_token %}";
 
-  const handleAddTask = () => {
-    if (taskTitle.trim() === "" || taskStatus.trim() === "") {
-      alert("Please fill in both task title and task status.");
-      return;
+  const addNewTask = (event) => {
+    const apiUrl = "http://127.0.0.1:8000/api/todos/item/";
+    let originalDate = selectedDate.toLocaleDateString("en-US");
+    originalDate = originalDate.replace(/\//g, "-");
+
+    function formatDate(originalDate) {
+      const parts = originalDate.split("-");
+      if (parts.length === 3) {
+        const [month, day, year] = parts;
+        const formattedDate = `${year}-${month}-${day}`;
+        return formattedDate;
+      } else {
+        return originalDate;
+      }
     }
 
-    const storedData = localStorage.getItem("user");
-    const storedObject = JSON.parse(storedData);
-    const username = storedObject.username;
-    
-    const newTask = {
-      userId: username,
-      id: Date.now(), // Use a timestamp as a unique ID
+    const formattedDate = formatDate(originalDate);
+
+    const data = {
       title: taskTitle,
-      completed: taskStatus.toLowerCase() === "completed", // Convert status to boolean
+      completed: taskStatus,
+      due_date: formattedDate,
+      user: user,
     };
 
-    const existingTasks = JSON.parse(localStorage.getItem("todosList")) || [];
-    const updatedTasks = [...existingTasks, newTask];
-    localStorage.setItem("todosList", JSON.stringify(updatedTasks));
+    axios
+      .post(apiUrl, data, {
+        headers: {
+          "Content-Type": "application/json",
+          "X-CSRFToken": csrfToken,
+           Authorization: `Token ${token}`,
+        },
+      })
+      .then((response) => {
+        console.log(response.data);
+      })
+      .catch((error) => {
+        console.log("Error:", error);
+      });
+  };
 
-    // Clear input fields
-    setTaskTitle("");
-    setTaskStatus("");
+  const DatePickerComponent = () => {
+    const handleDateChange = (date) => {
+      setSelectedDate(date);
+    };
+
+    return <DatePicker selected={selectedDate} onChange={handleDateChange} />;
   };
 
   return (
-    <FormElement>
+    <FormElement id="submit-form-id">
       <input
         placeholder="Enter task title"
         value={taskTitle}
         onChange={(e) => setTaskTitle(e.target.value)}
       />
-      <input
-        placeholder="Enter task status (completed/uncompleted)"
+      <select
+        id="taskStatus"
         value={taskStatus}
         onChange={(e) => setTaskStatus(e.target.value)}
-      />
-      <Button onClick={handleAddTask}>
+      >
+        <option value="">Select Status</option>
+        <option value="true">Completed</option>
+        <option value="false">Uncompleted</option>
+      </select>
+
+      <DatePickerComponent />
+      <Button onClick={addNewTask}>
         Create Task <LibraryAddIcon />
       </Button>
     </FormElement>
   );
 }
-
-export default NewTask;
